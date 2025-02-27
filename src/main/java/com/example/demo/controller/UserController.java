@@ -20,7 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @GetMapping
     public List<User> findAllUsers() {
         return userService.findAllUsers();
@@ -35,6 +34,5 @@ public class UserController {
     public User findUserByEmail(@PathVariable String email) {
         return userService.findUserByUserEmail(email);
     }
-
 
 }

@@ -7,8 +7,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 @AllArgsConstructor
 public class InMemoryUserServiceImpl implements UserService {
@@ -18,14 +16,7 @@ public class InMemoryUserServiceImpl implements UserService {
     @Override
     public List<User> findAllUsers() {
         return studentRepository.findAllUsers();
-
-
-
-
     }
-
-
-
 
     @Override
     public User findUserByUserName(String userName) {

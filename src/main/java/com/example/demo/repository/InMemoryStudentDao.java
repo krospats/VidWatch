@@ -6,17 +6,13 @@ import java.util.List;
 import lombok.Builder;
 import org.springframework.stereotype.Repository;
 
-
 @Repository
 public class InMemoryStudentDao {
-
 
     private final List<User> users = new ArrayList<>();
 
     @Builder
     public void addUsers() {
-
-
         users.add(User.builder().userName("Abobich").email("maksos@gmail.com").age(18).build());
         users.add(User.builder().userName("Rambrosich").email("evilMonsta777@mail.ru").age(20).build());
         users.add(User.builder().userName("PahomLegich").email("pahom396@zandex.ru").age(12).build());
@@ -43,6 +39,5 @@ public class InMemoryStudentDao {
                 .findFirst()
                 .orElse(null);
     }
-
 
 }
