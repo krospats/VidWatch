@@ -2,24 +2,34 @@ package com.example.demo.controller;
 
 import com.example.demo.model.User;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.service.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/api/v1/users")
+@AllArgsConstructor
 public class UserController {
+
+    private final UserService userService;
 
 
     @GetMapping
     public List<User> findAllUsers() {
-        return List.of(
-                User.builder().userName("Abobich").email("maksos@gmail.com").age(18).build(),
-                User.builder().userName("Rambrosich").email("evilMonsta777@mail.ru").age(20).build(),
-                User.builder().userName("PahomLegich").email("pahom396@zandex.ru").age(12).build()
-
-        );
+        return userService.findAllUsers();
     }
+
+    @GetMapping("/user")
+    public User findUserByUserName(@RequestParam String username) {
+        return userService.findUserByUserName(username);
+    }
+
+    @GetMapping("/{email}")
+    public User findUserByEmail(@PathVariable String email) {
+        return userService.findUserByUserEmail(email);
+    }
+
+
 }
