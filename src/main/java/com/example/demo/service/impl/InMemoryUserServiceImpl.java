@@ -4,7 +4,6 @@ import com.example.demo.model.User;
 import com.example.demo.repository.InMemoryStudentDao;
 import com.example.demo.service.UserService;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
