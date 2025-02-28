@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Data
 @Builder
-@Getter
 public class User {
 
     @Getter
