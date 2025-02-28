@@ -4,15 +4,20 @@ import com.example.demo.model.User;
 import com.example.demo.repository.InMemoryStudentDao;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 
 
 @Service
-@AllArgsConstructor
 public class UserService {
     private final InMemoryStudentDao studentRepository;
+
+    @Autowired
+    UserService(InMemoryStudentDao studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public List<User> findAllUsers() {
         return studentRepository.findAllUsers();
