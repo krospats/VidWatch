@@ -5,15 +5,12 @@ import com.example.demo.repository.InMemoryStudentDao;
 import com.example.demo.service.UserService;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class InMemoryUserServiceImpl implements UserService {
 
-
-    @Autowired
     private final InMemoryStudentDao studentRepository;
 
     @Override
