@@ -9,9 +9,15 @@ import lombok.Getter;
 @Getter
 public class User {
 
+    @Getter
     private String userName;
+
+    @Getter
     private String email;
+
     private String password;
+
     private int age;
+
 
 }
