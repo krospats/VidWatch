@@ -19,9 +19,7 @@ public class InMemoryStudentDao {
 
     @Builder
     public void addUsers() {
-        users.add(User.builder().userName("Abobich").email("maksos@gmail.com").id(1).age(18).build());
-        users.add(User.builder().userName("Rambrosich").email("evilMonsta777@mail.ru").id(2).age(20).build());
-        users.add(User.builder().userName("Pahom").email("pahom396@yandex.ru").id(3).age(12).build());
+
     }
 
     public List<User> findAllUsers() {

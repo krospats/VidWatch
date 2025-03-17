@@ -1,25 +1,43 @@
 package com.example.demo.model;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Builder
+
+@Getter
+@Entity
+@Table(name = "users")
 public class User {
+    public User() {}
 
-    @Getter
+    @Id // Указываем, что это первичный ключ
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения
+    private Long id;
+
+    @Setter
+    @Column(name = "user_name", nullable = false) // Указываем имя столбца и что он не может быть null
     private String userName;
 
-    @Getter
+    @Column(name = "age")
+    @Setter
+    private int age;
+
+
+    @Column(name = "email", nullable = false) // Указываем имя столбца и что он не может быть null
+    @Setter
     private String email;
 
-    @Getter
-    private int id;
 
+    @Column(name = "password", nullable = false) // Указываем имя столбца и что он не может быть null
+    @Setter
     private String password;
 
-    private int age;
 
 
 }

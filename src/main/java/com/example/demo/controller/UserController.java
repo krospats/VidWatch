@@ -3,47 +3,54 @@ package com.example.demo.controller;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import java.util.List;
-import javassist.NotFoundException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
+
 
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private final UserService userService;
-
     @Autowired
-    UserController(UserService userService) {
-        this.userService = userService;
+    private UserService userService;
+
+    // Создание пользователя
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    @GetMapping("all")
-    public List<User> findAllUsers() {
-        return userService.findAllUsers();
+    // Получение всех пользователей
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
-    @GetMapping()
-    public User findUserByUserName(@RequestParam String username) throws NotFoundException {
-        User newUser =  userService.findUserByUserName(username);
-        if (newUser == null) {
-            throw new NotFoundException("User not found");
-        }
-        return newUser;
-    }
-
+    // Получение пользователя по ID
     @GetMapping("/{id}")
-    public User findUserById(@PathVariable int id) throws NotFoundException {
-
-        User newUser =  userService.findUserById(id);
-        if (newUser == null) {
-            throw new NotFoundException("User with id " + id + " not found");
-        }
-        return newUser;
+    public Optional<User> getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 
+    // Обновление пользователя
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        return userService.updateUser(id, userDetails);
+    }
+
+    // Удаление пользователя
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
 }
