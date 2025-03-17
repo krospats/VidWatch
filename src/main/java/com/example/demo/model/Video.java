@@ -18,7 +18,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Video {
-    public Video() {}
 
     @Id // Указываем, что это первичный ключ
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения
