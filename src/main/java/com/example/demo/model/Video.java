@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +32,7 @@ public class Video {
 
 
     @Column(name = "views", nullable = false) // Указываем имя столбца и что он не может быть null
-    private String views;
+    private int views;
 
     @Column(name = "duration") // Указываем имя столбца и что он не может быть null
     private int duration;
@@ -41,10 +43,14 @@ public class Video {
 
 
     @Column(name = "likes", nullable = false) // Указываем имя столбца и что он не может быть null
-    private String likes;
+    private int likes;
 
     @Column(name = "dislikes") // Указываем имя столбца и что он не может быть null
     private int dislikes;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }
 
