@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import java.util.List;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,19 +22,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("all")
     public List<User> findAllUsers() {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/user")
-    public User findUserByUserName(@RequestParam String username) {
-        return userService.findUserByUserName(username);
+    @GetMapping()
+    public User findUserByUserName(@RequestParam String username) throws NotFoundException {
+        User newUser =  userService.findUserByUserName(username);
+        if (newUser == null) {
+            throw new NotFoundException("User not found");
+        }
+        return newUser;
     }
 
-    @GetMapping("/{email}")
-    public User findUserByEmail(@PathVariable String email) {
-        return userService.findUserByUserEmail(email);
+    @GetMapping("/{id}")
+    public User findUserById(@PathVariable int id) throws NotFoundException {
+
+        User newUser =  userService.findUserById(id);
+        if (newUser == null) {
+            throw new NotFoundException("User with id " + id + " not found");
+        }
+        return newUser;
     }
 
 }

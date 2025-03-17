@@ -14,6 +14,9 @@ public class User {
     @Getter
     private String email;
 
+    @Getter
+    private int id;
+
     private String password;
 
     private int age;
