@@ -21,8 +21,8 @@ public class UserDto {
 
         // Маппинг списка видео
         if (user.getVideos() != null) {
-            List<Video> videos = user.getVideos();
-            List<VideoDto> videoDtos = videos.stream()
+            List<Video> videoList = user.getVideos();
+            List<VideoDto> videoDtos = videoList.stream()
                     .map(VideoDto::new)
                     .toList();
             this.setVideos(videoDtos);

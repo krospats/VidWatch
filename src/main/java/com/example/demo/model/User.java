@@ -18,7 +18,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "users")
 public class User {
-    public User() {}
 
     @Id // Указываем, что это первичный ключ
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения
