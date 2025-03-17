@@ -11,6 +11,7 @@ import lombok.Setter;
 
 
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -20,22 +21,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения
     private Long id;
 
-    @Setter
     @Column(name = "user_name", nullable = false) // Указываем имя столбца и что он не может быть null
     private String userName;
 
     @Column(name = "age")
-    @Setter
     private int age;
 
 
     @Column(name = "email", nullable = false) // Указываем имя столбца и что он не может быть null
-    @Setter
     private String email;
 
 
     @Column(name = "password", nullable = false) // Указываем имя столбца и что он не может быть null
-    @Setter
     private String password;
 
 
