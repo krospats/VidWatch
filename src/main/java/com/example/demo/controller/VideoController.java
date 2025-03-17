@@ -4,6 +4,7 @@ import com.example.demo.dto.VideoDto;
 import com.example.demo.model.Video;
 import com.example.demo.service.VideoService;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +42,7 @@ public class VideoController {
     @GetMapping("/{id}")
     public VideoDto getVideoById(@PathVariable Long id) {
         VideoDto video = videoService.getVideoById(id);
-        if (video == null) {
-            return (VideoDto) ResponseEntity.status(HttpStatus.NOT_FOUND);
-        } else {
-            return video;
-        }
+        return Objects.requireNonNullElseGet(video, () -> (VideoDto) ResponseEntity.status(HttpStatus.NOT_FOUND));
 
     }
 
