@@ -11,8 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserAndVideoService {
 
+    private final UserAndVideoRepository userRepository;
+
     @Autowired
-    private UserAndVideoRepository userRepository;
+    public UserAndVideoService(UserAndVideoRepository userRepository) {
+        this.userRepository = userRepository;
+
+    }
 
     // Получение пользователя по ID с видео
     public Optional<User> getUserWithVideos(Long id) {

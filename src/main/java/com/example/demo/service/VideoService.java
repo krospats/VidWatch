@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.VideoDto;
 import com.example.demo.model.Video;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VideoRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class VideoService {
 
+    private final VideoRepository videoRepository;
+
     @Autowired
-    private VideoRepository videoRepository;
+    public VideoService(VideoRepository videoRepository) {
+        this.videoRepository = videoRepository;
+    }
+
 
     // Создание видео
     public VideoDto createVideo(Video video) {

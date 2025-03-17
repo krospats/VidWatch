@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.VideoDto;
 import com.example.demo.model.Video;
+import com.example.demo.repository.VideoRepository;
 import com.example.demo.service.VideoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/videos")
 public class VideoController {
 
+    private final VideoService videoService;
+
     @Autowired
-    private VideoService videoService;
+    public VideoController(VideoService videoService) {
+        this.videoService = videoService;
+    }
 
     // Создание видео
     @PostMapping

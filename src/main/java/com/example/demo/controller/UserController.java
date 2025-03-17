@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.UserDto;
 import com.example.demo.dto.VideoDto;
 import com.example.demo.model.User;
+import com.example.demo.repository.UserAndVideoRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VideoService;
 import java.util.List;
@@ -23,11 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+    private final VideoService videoService;
+
 
     @Autowired
-    private VideoService videoService;
+    public UserController(UserService userService, VideoService videoService) {
+        this.userService = userService;
+        this.videoService = videoService;
+
+    }
 
     // Создание пользователя
     @PostMapping

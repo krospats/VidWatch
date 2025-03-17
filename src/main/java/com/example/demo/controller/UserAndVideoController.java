@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserAndVideoController {
 
+    private final UserAndVideoService userAndVideoService;
+
     @Autowired
-    private UserAndVideoService userAndVideoService;
+    public UserAndVideoController(UserAndVideoService videoService) {
+        this.userAndVideoService = videoService;
+    }
 
     @GetMapping("/{id}/videos")
     public ResponseEntity<User> getUserWithVideos(@PathVariable Long id) {
