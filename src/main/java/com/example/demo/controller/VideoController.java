@@ -4,7 +4,6 @@ import com.example.demo.dto.VideoDto;
 import com.example.demo.model.Video;
 import com.example.demo.service.VideoService;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +37,13 @@ public class VideoController {
     }
 
     // Получение видео по ID
-    @SuppressWarnings("checkstyle:WhitespaceAfter")
     @GetMapping("/{id}")
-    public VideoDto getVideoById(@PathVariable Long id) {
+    public ResponseEntity<?> getVideoById(@PathVariable Long id) {
         VideoDto video = videoService.getVideoById(id);
-        return Objects.requireNonNullElseGet(video, () -> (VideoDto) ResponseEntity.status(HttpStatus.NOT_FOUND));
-
+        if (video != null) {
+            return ResponseEntity.ok(video);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     // Обновление видео

@@ -2,11 +2,12 @@ package com.example.demo.service;
 
 import com.example.demo.dto.VideoDto;
 import com.example.demo.model.Video;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VideoRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,36 @@ import org.springframework.stereotype.Service;
 @Service
 public class VideoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(VideoService.class);
     private final VideoRepository videoRepository;
+    private final CacheService cacheService;
 
     @Autowired
-    public VideoService(VideoRepository videoRepository) {
+    public VideoService(VideoRepository videoRepository, CacheService cacheService) {
         this.videoRepository = videoRepository;
+        this.cacheService = cacheService;
+    }
+
+    public VideoDto getVideoById(Long id) {
+        String cacheKey = "video_" + id;
+
+        // Используем новый метод с проверкой типа
+        Optional<VideoDto> cachedVideo = cacheService.get(cacheKey, VideoDto.class);
+        if (cachedVideo.isPresent()) {
+            logger.info("Returning video {} from cache", id);
+            return cachedVideo.get();
+        }
+
+        logger.debug("Video {} not found in cache, querying database", id);
+        Optional<Video> video = videoRepository.findById(id);
+
+        if (video.isPresent()) {
+            VideoDto videoDto = new VideoDto(video.get());
+            cacheService.put(cacheKey, videoDto, VideoDto.class);
+            return videoDto;
+        }
+
+        return null;
     }
 
 
@@ -38,10 +64,7 @@ public class VideoService {
     }
 
     // Получение видео по ID
-    public VideoDto getVideoById(Long id) {
-        Optional<Video> video = videoRepository.findById(id);
-        return video.map(VideoDto::new).orElse(null);
-    }
+
 
     // Обновление видео
     public VideoDto updateVideo(Long id, Video videoDetails) {
