@@ -35,6 +35,7 @@ public class UserAndVideoService {
         Optional<List<UserDto>> cachedUserDtos = cacheService.get(cacheKey, List.class)
                 .map(list -> (List<UserDto>) list);
 
+
         if (cachedUserDtos.isPresent()) {
             logger.info("Returning users with video {} from cache", videoName);
             return cachedUserDtos.get();
