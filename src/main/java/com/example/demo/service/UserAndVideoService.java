@@ -27,7 +27,7 @@ public class UserAndVideoService {
 
     public List<UserDto> getUsersByVideoName(String videoName) {
         String cacheKey = "users_by_video_" + videoName;
-        logger.debug("Checking cache for users with video: {}", videoName);
+        logger.debug("Checking cache for users with video");
 
         // Получаем список UserDto из кэша
         @SuppressWarnings("unchecked")
@@ -36,17 +36,17 @@ public class UserAndVideoService {
 
 
         if (cachedUserDtos.isPresent()) {
-            logger.info("Returning users with video {} from cache", videoName);
+            logger.info("Returning users with video from cache");
             return cachedUserDtos.get();
 
         }
-        logger.debug("Users with video {} not found in cache, querying database", videoName);
+        logger.debug("Users with video not found in cache, querying database");
         List<User> users = userRepository.findUsersByVideoName(videoName);
         List<UserDto> userDtos = users.stream()
                 .map(UserDto::new).toList();
 
         if (!userDtos.isEmpty()) {
-            logger.debug("Caching {} users with video {}", users.size(), videoName);
+            logger.debug("Caching users with video");
 
             // Конвертируем в List<UserDto> для кэширования
             cacheService.put(cacheKey, userDtos, List.class);
