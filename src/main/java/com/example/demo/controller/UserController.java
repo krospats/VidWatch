@@ -45,7 +45,7 @@ public class UserController {
 
     // Получение всех пользователей
     @GetMapping
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         if (users.isEmpty()) {
             throw new NotFoundException("there is no users");
@@ -55,7 +55,7 @@ public class UserController {
 
     // Получение пользователя по ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         UserDto userDto = userService.getUserById(id);
         if (userDto == null) {
             throw new NotFoundException("there is no user with id " + id);
@@ -65,7 +65,7 @@ public class UserController {
 
     // Обновление пользователя
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         UserDto userDto = userService.updateUser(id, userDetails);
         if (userDto == null) {
             throw new NotFoundException("there is no user with id " + id);

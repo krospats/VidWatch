@@ -51,7 +51,7 @@ public class VideoController {
 
     // Получение видео по ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getVideoById(@PathVariable Long id) {
+    public ResponseEntity<VideoDto> getVideoById(@PathVariable Long id) {
         VideoDto video = videoService.getVideoById(id);
         if (video != null) {
             return ResponseEntity.ok(video);
