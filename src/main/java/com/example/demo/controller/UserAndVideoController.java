@@ -3,13 +3,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.exceptions.NotFoundException;
-import com.example.demo.model.User;
 import com.example.demo.service.CacheService;
 import com.example.demo.service.UserAndVideoService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-public class UserAndVideoController {
+public class  UserAndVideoController {
 
     private final UserAndVideoService userAndVideoService;
     private final CacheService cacheService;

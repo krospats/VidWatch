@@ -4,7 +4,6 @@ import com.example.demo.dto.UserDto;
 import com.example.demo.dto.VideoDto;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.User;
-import com.example.demo.repository.UserAndVideoRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VideoService;
 import java.util.List;

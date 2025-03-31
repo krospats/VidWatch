@@ -31,6 +31,7 @@ public class UserAndVideoService {
         logger.debug("Checking cache for users with video: {}", videoName);
 
         // Получаем список UserDto из кэша
+        @SuppressWarnings("unchecked")
         Optional<List<UserDto>> cachedUserDtos = cacheService.get(cacheKey, List.class)
                 .map(list -> (List<UserDto>) list);
 
@@ -56,14 +57,5 @@ public class UserAndVideoService {
 
         return userDtos;
 
-    }
-
-    private User convertToUser(UserDto userDto) {
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setUserName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        // Остальные поля при необходимости
-        return user;
     }
 }

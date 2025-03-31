@@ -48,8 +48,7 @@ public class Video {
     @Getter
     @Setter
     private Long userId;
-
-    }
+}
 
 
 
