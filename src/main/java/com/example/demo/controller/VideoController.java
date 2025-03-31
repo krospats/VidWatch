@@ -34,7 +34,6 @@ public class VideoController {
         if (video.getUserId() == null) {
             return ResponseEntity.badRequest().build();
         }
-
         // Fetch the user from repository
         User user = userRepository.findById(video.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + video.getUserId()));
