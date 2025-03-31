@@ -1,7 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.VideoDto;
+import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.model.User;
 import com.example.demo.model.Video;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import com.example.demo.service.VideoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +20,29 @@ import org.springframework.web.bind.annotation.*;
 public class VideoController {
 
     private final VideoService videoService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public VideoController(VideoService videoService) {
+    public VideoController(VideoService videoService, UserRepository userRepository) {
         this.videoService = videoService;
+        this.userRepository = userRepository;
     }
 
     // Создание видео
     @PostMapping
     public ResponseEntity<VideoDto> createVideo(@RequestBody Video video) {
+        if (video.getUserId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Fetch the user from repository
+        User user = userRepository.findById(video.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + video.getUserId()));
+
+        video.setUser(user);
         VideoDto createdVideo = videoService.createVideo(video);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdVideo);
-    }
+          }
 
     // Получение всех видео
     @GetMapping

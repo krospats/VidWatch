@@ -2,12 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.dto.VideoDto;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserAndVideoRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VideoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,20 +46,32 @@ public class UserController {
 
     // Получение всех пользователей
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<?> getAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
+        if (users.isEmpty()) {
+            throw new NotFoundException("there is no users");
+        }
+        return ResponseEntity.ok(users);
     }
 
     // Получение пользователя по ID
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        UserDto userDto = userService.getUserById(id);
+        if (userDto == null) {
+            throw new NotFoundException("there is no user with id " + id);
+        }
+        return ResponseEntity.ok(userDto);
     }
 
     // Обновление пользователя
     @PutMapping("/{id}")
-    public UserDto updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        return userService.updateUser(id, userDetails);
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        UserDto userDto = userService.updateUser(id, userDetails);
+        if (userDto == null) {
+            throw new NotFoundException("there is no user with id " + id);
+        }
+        return ResponseEntity.ok(userDto);
     }
 
     // Удаление пользователя
