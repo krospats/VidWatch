@@ -30,7 +30,7 @@ public class  UserAndVideoController {
 
 
     @GetMapping("/search")
-    public ResponseEntity<?> getUsersByVideoName(@RequestParam String videoName) {
+    public ResponseEntity<List<UserDto>> getUsersByVideoName(@RequestParam String videoName) {
         List<UserDto> users = userAndVideoService.getUsersByVideoName(videoName);
 
         if (users.isEmpty()) {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CacheService {
     private static final Logger logger = LoggerFactory.getLogger(CacheService.class);
-    private final int maxCacheSize = 100;
+    private static final int maxCacheSize = 100;
     private final Map<String, Object> cache;
 
     public CacheService() {
@@ -49,16 +49,6 @@ public class CacheService {
         return Optional.empty();
     }
 
-    public synchronized void evict(String key) {
-        logger.debug("Evicting cache entry: {}", key);
-        cache.remove(key);
-        logger.info("Cache size after evict: {}/{}", size(), maxCacheSize);
-    }
-
-    public synchronized void clear() {
-        logger.info("Clearing entire cache");
-        cache.clear();
-    }
 
     public synchronized int size() {
         return cache.size();

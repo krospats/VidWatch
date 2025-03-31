@@ -5,7 +5,6 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserAndVideoRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,7 @@ public class UserAndVideoService {
         logger.debug("Users with video {} not found in cache, querying database", videoName);
         List<User> users = userRepository.findUsersByVideoName(videoName);
         List<UserDto> userDtos = users.stream()
-                .map(UserDto::new)
-                .collect(Collectors.toList());
+                .map(UserDto::new).toList();
 
         if (!userDtos.isEmpty()) {
             logger.debug("Caching {} users with video {}", users.size(), videoName);
