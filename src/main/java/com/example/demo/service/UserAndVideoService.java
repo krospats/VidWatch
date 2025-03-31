@@ -24,30 +24,7 @@ public class UserAndVideoService {
         this.cacheService = cacheService;
     }
 
-    public Optional<User> getUserWithVideos(Long id) {
-        String cacheKey = "user_" + id;
-        logger.debug("Checking cache for user: {}", id);
 
-        // Получаем UserDto из кэша
-        Optional<UserDto> cachedUserDto = cacheService.get(cacheKey, UserDto.class);
-
-        if (cachedUserDto.isPresent()) {
-            logger.info("Returning user {} from cache", id);
-            // Конвертируем UserDto обратно в User
-            return Optional.of(convertToUser(cachedUserDto.get()));
-        }
-
-        logger.debug("User {} not found in cache, querying database", id);
-        Optional<User> user = userRepository.findByIdWithVideos(id);
-
-        if (user.isPresent()) {
-            logger.debug("Caching user {}", id);
-            // Сохраняем UserDto в кэш
-            cacheService.put(cacheKey, new UserDto(user.get()), UserDto.class);
-        }
-
-        return user;
-    }
 
     public List<UserDto> getUsersByVideoName(String videoName) {
         String cacheKey = "users_by_video_" + videoName;

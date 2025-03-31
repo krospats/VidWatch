@@ -29,12 +29,7 @@ public class UserAndVideoController {
         this.cacheService = cacheService;
     }
 
-    @GetMapping("/{id}/videos")
-    public ResponseEntity<User> getUserWithVideos(@PathVariable Long id) {
-        Optional<User> user = userAndVideoService.getUserWithVideos(id);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+
 
     @GetMapping("/search")
     public ResponseEntity<?> getUsersByVideoName(@RequestParam String videoName) {

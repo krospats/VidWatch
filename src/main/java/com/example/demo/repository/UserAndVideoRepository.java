@@ -10,8 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserAndVideoRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.videos WHERE u.id = :id")
-    Optional<User> findByIdWithVideos(@Param("id") Long id);
+
 
     @Query("SELECT u FROM User u JOIN u.videos v WHERE v.videoName LIKE %:videoName%")
     List<User> findUsersByVideoName(@Param("videoName") String videoName);

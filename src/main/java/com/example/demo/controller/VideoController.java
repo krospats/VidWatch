@@ -41,7 +41,7 @@ public class VideoController {
         video.setUser(user);
         VideoDto createdVideo = videoService.createVideo(video);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdVideo);
-          }
+    }
 
     // Получение всех видео
     @GetMapping
