@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.VideoDto;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.Video;
 import com.example.demo.repository.VideoRepository;
 import java.util.ArrayList;
@@ -53,7 +54,11 @@ public class VideoService {
 
 
     public VideoDto createVideo(Video video) {
+
+        clearVideoNameCache(video.getVideoName());
+
         return new VideoDto(videoRepository.save(video));
+
     }
 
     // Получение всех видео
@@ -72,6 +77,7 @@ public class VideoService {
     public VideoDto updateVideo(Long id, Video videoDetails) {
         Video video = videoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Video not found"));
+
         video.setVideoName(videoDetails.getVideoName());
         video.setUrl(videoDetails.getUrl());
         video.setDuration(videoDetails.getDuration());
@@ -79,11 +85,33 @@ public class VideoService {
         video.setViews(videoDetails.getViews());
         video.setLikes(videoDetails.getLikes());
         video.setDislikes(videoDetails.getDislikes());
+
+        clearVideoNameCache(video.getVideoName());
+        clearVideosCache(id);
+
         return new VideoDto(videoRepository.save(video));
+
     }
 
     // Удаление видео
     public void deleteVideo(Long id) {
+        Video video = videoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Video not found"));
+        String videoName = video.getVideoName();
         videoRepository.deleteById(id);
+        clearVideoNameCache(videoName);
+        clearVideosCache(id);
+    }
+
+    private void clearVideosCache(Long id) {
+
+        cacheService.evict("video_" + id);
+
+    }
+
+    private void clearVideoNameCache(String videoName) {
+
+        cacheService.evict("users_by_video_" + videoName);
+
     }
 }

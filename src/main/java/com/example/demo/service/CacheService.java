@@ -56,4 +56,8 @@ public class CacheService {
     public synchronized int getMaxSize() {
         return MAX_CACHE_SIZE;
     }
+
+    public void evict(String key) {
+        cache.remove(key);
+    }
 }
