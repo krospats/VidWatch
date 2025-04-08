@@ -6,6 +6,10 @@ import com.example.demo.model.User;
 import com.example.demo.model.Video;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.VideoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/videos")
+@Tag(name = "Видео", description = "Операции с видео")
 public class VideoController {
 
     private final VideoService videoService;
@@ -28,8 +33,19 @@ public class VideoController {
     }
 
     // Создание видео
+
     @PostMapping
-    public ResponseEntity<VideoDto> createVideo(@RequestBody Video video) {
+    @Operation(
+            summary = "Создать новое видео",
+            description = "Создает новое видео и связывает его с пользователем",
+            responses = {
+                @ApiResponse(responseCode = "201", description = "Видео успешно создано"),
+                @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+            }
+    )
+    public ResponseEntity<VideoDto> createVideo(
+            @Parameter(description = "Данные видео", required = true)
+            @RequestBody Video video) {
         if (video.getUserId() == null) {
             return ResponseEntity.badRequest().build();
         }
