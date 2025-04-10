@@ -19,9 +19,9 @@ public class LoggingAspect {
 
     @Before("controllerMethods() || serviceMethods()")
     public void logMethodCall(JoinPoint jp) {
-        logger.info("Method called: {} with args: {}",
-                jp.getSignature().toShortString(),
-                jp.getArgs());
+        String methodName = jp.getSignature().toShortString();
+        Object[] args = jp.getArgs();
+        logger.info("Method called: {} with args: {}", methodName, args);
     }
 
     @AfterReturning(pointcut = "controllerMethods() || serviceMethods()", returning = "result")
