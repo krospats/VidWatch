@@ -26,15 +26,15 @@ public class LoggingAspect {
 
     @AfterReturning(pointcut = "controllerMethods() || serviceMethods()", returning = "result")
     public void logMethodSuccess(JoinPoint jp, Object result) {
-        logger.info("Method {} executed successfully. Returned: {}",
-                jp.getSignature().toShortString(),
-                result != null ? result.toString() : "void");
+        String methodName = jp.getSignature().toShortString();
+        String newResult = result == null ? "null" : result.toString();
+        logger.info("Method {} executed successfully. Returned: {}", methodName, newResult);
     }
 
     @AfterThrowing(pointcut = "controllerMethods() || serviceMethods()", throwing = "ex")
     public void logMethodException(JoinPoint jp, Exception ex) {
-        logger.error("Exception in method {}: {}",
-                jp.getSignature().toShortString(),
-                ex.getMessage(), ex);
+        String methodName = jp.getSignature().toShortString();
+        String newEx = ex == null ? "null" : ex.toString();
+        logger.error("Exception in method {}: {}", methodName, newEx);
     }
 }
