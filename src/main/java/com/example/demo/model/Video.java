@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +15,11 @@ import lombok.Setter;
 public class Video {
 
     @Id // Указываем, что это первичный ключ
+    @Min(value = 1, message = "Id  не может быть отрицательным")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения
     private Long id;
 
+    @NotBlank
     @Column(name = "video_name", nullable = false) // Указываем имя столбца и что он не может быть null
     private String videoName;
 
@@ -23,21 +27,26 @@ public class Video {
     private String releaseDate;
 
 
-    @Column(name = "views", nullable = false) // Указываем имя столбца и что он не может быть null
+    @Column(name = "views", nullable = false)
+    @Min(value = 0, message = "Просмотры")
     private int views;
 
     @Column(name = "duration") // Указываем имя столбца и что он не может быть null
+    @Min(value = 0, message = "Длина")
     private int duration;
 
+    @NotBlank
     @Column(name = "url", nullable = false) // Указываем имя столбца и что он не может быть null
     private String url;
 
 
 
     @Column(name = "likes", nullable = false) // Указываем имя столбца и что он не может быть null
+    @Min(value = 0, message = "Лайки")
     private int likes;
 
     @Column(name = "dislikes") // Указываем имя столбца и что он не может быть null
+    @Min(value = 0, message = "Дизлайки")
     private int dislikes;
 
     @ManyToOne
@@ -47,6 +56,7 @@ public class Video {
     @Transient
     @Getter
     @Setter
+    @Min(value = 1, message = "Id не может быть отрицательным")
     private Long userId;
 }
 

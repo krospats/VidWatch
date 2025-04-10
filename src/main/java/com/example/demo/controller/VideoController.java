@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +47,7 @@ public class VideoController {
     )
     public ResponseEntity<VideoDto> createVideo(
             @Parameter(description = "Данные видео", required = true)
-            @RequestBody Video video) {
+            @Valid @RequestBody Video video) {
         if (video.getUserId() == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -67,7 +69,7 @@ public class VideoController {
 
     // Получение видео по ID
     @GetMapping("/{id}")
-    public ResponseEntity<VideoDto> getVideoById(@PathVariable Long id) {
+    public ResponseEntity<VideoDto> getVideoById(@PathVariable @Min(value = 1, message = "Id не может быть отрицательным") Long id) {
         VideoDto video = videoService.getVideoById(id);
         if (video != null) {
             return ResponseEntity.ok(video);
@@ -77,14 +79,21 @@ public class VideoController {
 
     // Обновление видео
     @PutMapping("/{id}")
-    public ResponseEntity<VideoDto> updateVideo(@PathVariable Long id, @RequestBody Video videoDetails) {
+    public ResponseEntity<VideoDto> updateVideo(
+            @PathVariable @Min(value = 1, message = "Id не может быть отрицательным") Long id,
+            @Valid @RequestBody Video videoDetails) {
+        VideoDto videoDto = videoService.getVideoById(id);
+        if (videoDto == null) {
+            throw new NotFoundException("there is no video with id " + id);
+        }
+
         VideoDto updatedVideo = videoService.updateVideo(id, videoDetails);
         return ResponseEntity.ok(updatedVideo);
     }
 
     // Удаление видео
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteVideo(@PathVariable @Min(value = 1, message = "Id не может быть отрицательным") Long id) {
         videoService.deleteVideo(id);
         return ResponseEntity.noContent().build();
     }

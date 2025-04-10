@@ -6,6 +6,8 @@ import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import com.example.demo.service.VideoService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,7 @@ public class UserController {
 
     // Создание пользователя
     @PostMapping
-    public UserDto createUser(@RequestBody User user) {
+    public UserDto createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
 
@@ -55,7 +57,7 @@ public class UserController {
 
     // Получение пользователя по ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@Valid @Min(value = 1, message = "Id не может быть отрицательным") @PathVariable Long id) {
         UserDto userDto = userService.getUserById(id);
         if (userDto == null) {
             throw new NotFoundException("there is no user with id " + id);
@@ -65,7 +67,9 @@ public class UserController {
 
     // Обновление пользователя
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<UserDto> updateUser(
+            @Min(value = 1, message = "Id не может быть отрицательным") @PathVariable Long id,
+            @Valid @RequestBody User userDetails) {
         UserDto userDto = userService.updateUser(id, userDetails);
         if (userDto == null) {
             throw new NotFoundException("there is no user with id " + id);
@@ -75,7 +79,7 @@ public class UserController {
 
     // Удаление пользователя
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@Min(value = 1, message = "Id не может быть отрицательным") @PathVariable Long id) {
         List<VideoDto> videos = videoService.getAllVideos();
         for (VideoDto video : videos) {
             videoService.deleteVideo(video.getId());
