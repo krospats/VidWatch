@@ -36,7 +36,6 @@ public class UserDto {
         this.setEmail(user.getEmail());
         this.setAge(user.getAge());
 
-        // Маппинг списка видео
         if (user.getVideos() != null) {
             List<Video> videoList = user.getVideos();
             List<VideoDto> videoDtos = videoList.stream()
@@ -45,5 +44,6 @@ public class UserDto {
             this.setVideos(videoDtos);
         }
     }
+
 }
 

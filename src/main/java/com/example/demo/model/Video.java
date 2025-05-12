@@ -28,11 +28,11 @@ public class Video {
 
 
     @Column(name = "views", nullable = false)
-    @Min(value = 0, message = "Просмотры")
+    @Min(value = 0, message = "Просмотры не могут быть отрицательным")
     private int views;
 
     @Column(name = "duration") // Указываем имя столбца и что он не может быть null
-    @Min(value = 0, message = "Длина")
+    @Min(value = 0, message = "Длина  не может быть отрицательным")
     private int duration;
 
     @NotBlank
@@ -42,11 +42,11 @@ public class Video {
 
 
     @Column(name = "likes", nullable = false) // Указываем имя столбца и что он не может быть null
-    @Min(value = 0, message = "Лайки")
+    @Min(value = 0, message = "Лайки не может быть отрицательным")
     private int likes;
 
     @Column(name = "dislikes") // Указываем имя столбца и что он не может быть null
-    @Min(value = 0, message = "Дизлайки")
+    @Min(value = 0, message = "Дизлайки не могут быть отрицательным")
     private int dislikes;
 
     @ManyToOne

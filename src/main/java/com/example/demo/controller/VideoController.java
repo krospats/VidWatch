@@ -8,11 +8,15 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +38,6 @@ public class VideoController {
         this.userRepository = userRepository;
     }
 
-    // Создание видео
 
     @PostMapping
     @Operation(
@@ -60,14 +63,75 @@ public class VideoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdVideo);
     }
 
-    // Получение всех видео
+    @PostMapping("/bulk")
+    @Operation(
+            summary = "Массовое создание видео",
+            description = "Создает несколько видео за один запрос",
+            responses = {
+                @ApiResponse(
+                            responseCode = "201",
+                            description = "Видео успешно созданы",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = VideoDto.class))
+                            )
+                    ),
+                @ApiResponse(
+                            responseCode = "400",
+                            description = "Неверные входные данные"
+                    ),
+                @ApiResponse(
+                            responseCode = "404",
+                            description = "Пользователь не найден"
+                    )
+            }
+    )
+    public ResponseEntity<List<VideoDto>> createVideosBulk(
+            @RequestBody @Valid
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Список видео для создания",
+                    required = true,
+                    content = @Content(
+                            array = @ArraySchema(schema = @Schema(implementation = Video.class))
+                    )
+            )
+            List<Video> videos) {
+
+        List<VideoDto> createdVideos = videos.stream()
+                .map(request -> {
+                    User user = userRepository.findById(request.getUserId())
+                            .orElseThrow(() -> new NotFoundException("User not found"));
+                    request.setUser(user);
+                    return videoService.createVideo(request);
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdVideos);
+    }
+
+    @Operation(
+            summary = "Получить все видео",
+            description = "Возвращает список всех видео",
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Лист успешно возвращен"),
+                @ApiResponse(responseCode = "404", description = "Не найдено ни одного видео")
+            }
+    )
     @GetMapping
     public ResponseEntity<List<VideoDto>> getAllVideos() {
         List<VideoDto> videos = videoService.getAllVideos();
         return ResponseEntity.ok(videos);
     }
 
-    // Получение видео по ID
+    @Operation(
+            summary = "Получить видео по айди",
+            description = "Возвращает видео с введенным айди",
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Видео найдено"),
+                @ApiResponse(responseCode = "200", description = "Ошибка в вводимых данных"),
+                @ApiResponse(responseCode = "404", description = "Не найдено видео")
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<VideoDto> getVideoById(@PathVariable @Min(value = 1, message = "Id не может быть отрицательным") Long id) {
         VideoDto video = videoService.getVideoById(id);
@@ -77,7 +141,15 @@ public class VideoController {
         return ResponseEntity.notFound().build();
     }
 
-    // Обновление видео
+    @Operation(
+            summary = "Обновить видео по айди",
+            description = "Обновляет видео с введенным айди",
+            responses = {@ApiResponse(responseCode = "200",
+                    description = "Видео изменено"), @ApiResponse(responseCode = "200",
+                    description = "Ошибка в вводимых данных"), @ApiResponse(responseCode = "404",
+                    description = "Не найдено видео")
+            }
+    )
     @PutMapping("/{id}")
     public ResponseEntity<VideoDto> updateVideo(
             @PathVariable @Min(value = 1, message = "Id не может быть отрицательным") Long id,
@@ -91,7 +163,14 @@ public class VideoController {
         return ResponseEntity.ok(updatedVideo);
     }
 
-    // Удаление видео
+    @Operation(
+            summary = "Удалить видео по айди",
+            description = "Удаляет видео с введенным айди",
+            responses = {@ApiResponse(responseCode = "200",
+                    description = "Видео удалено"), @ApiResponse(responseCode = "200",
+                    description = "Ошибка в вводимых данных")
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVideo(@PathVariable @Min(value = 1, message = "Id не может быть отрицательным") Long id) {
         videoService.deleteVideo(id);

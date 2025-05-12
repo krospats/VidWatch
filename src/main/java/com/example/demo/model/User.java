@@ -48,5 +48,19 @@ public class User {
     private List<Video> videos;
 
 
+    public User(long id, String testUser, String mail, int age, String password) {
+        this.userName = testUser;
+        this.email = mail;
+        this.id = id;
+        this.age = age;
+        this.password = password;
+    }
 
+    public User() {
+        this.userName = "testUser";
+        this.email = "test@test.com";
+        this.id = 50L;
+        this.age = 50;
+        this.password = "zAbcdef9";
+    }
 }

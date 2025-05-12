@@ -49,4 +49,5 @@ public class VideoDto {
         this.setDislikes(video.getDislikes());
         this.setAuthor(video.getUser().getUserName());
     }
+
 }

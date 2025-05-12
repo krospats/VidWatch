@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserAndVideoService {
-    private static final Logger logger = LoggerFactory.getLogger(UserAndVideoService.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final UserAndVideoRepository userRepository;
     private final CacheService cacheService;
 
@@ -57,4 +57,5 @@ public class UserAndVideoService {
         return userDtos;
 
     }
+
 }

@@ -35,6 +35,7 @@ public class LoggingAspect {
     public void logMethodException(JoinPoint jp, Exception ex) {
         String methodName = jp.getSignature().toShortString();
         String newEx = ex == null ? "null" : ex.toString();
-        logger.error("Exception in method {}: {}", methodName, newEx);
+        logger.error("Method {} isn't executed . Returned: {}", methodName, newEx);
+
     }
 }
