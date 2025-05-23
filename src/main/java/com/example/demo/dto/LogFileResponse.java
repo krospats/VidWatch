@@ -1,0 +1,16 @@
+package com.example.demo.dto;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class LogFileResponse {
+    private String taskId;
+    private String filename;
+    private byte[] content;
+    // конструкторы, геттеры, сеттеры
+}
