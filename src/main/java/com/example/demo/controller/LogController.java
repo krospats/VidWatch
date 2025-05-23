@@ -1,19 +1,17 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LogFileResponse;
+import com.example.demo.dto.LogTaskResponse;
+import com.example.demo.dto.LogTaskStatus;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.service.LogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,71 +19,80 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
 
 
 @RestController
 @RequestMapping("/api/logs")
-@Tag(name = "Логи", description = "Операции с логами системы")
+@Tag(name = "Логи", description = "Асинхронная работа с логами")
 public class LogController {
 
-    @SuppressWarnings("checkstyle:Indentation")
-    @GetMapping(value = "/{date}", produces = MediaType.TEXT_PLAIN_VALUE)
-    @Operation(
-            summary = "Получить логи за дату",
-            description = "Возвращает файл с логами за указанную дату",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Логи успешно получены",
-                            content = @Content(
-                                    mediaType = "text/plain",
-                                    schema = @Schema(type = "string", format = "binary")
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Логи не найдены"
-                    )
-            }
-    )
-    public ResponseEntity<Resource> getLogsByDate(
-            @Parameter(description = "Дата в формате YYYY-MM-DD", example = "2023-12-31")
-            @PathVariable String date) throws IOException {
+    private final LogService logService;
 
-        // 1. Проверяем формат даты
-        LocalDate logDate;
+    @Autowired
+    public LogController(LogService logService) {
+        this.logService = logService;
+    }
+
+    @PostMapping("/generate/{date}")  // Убедитесь, что URL одинаковый!
+    @Operation(summary = "Запустить генерацию логов")
+    public ResponseEntity<LogTaskResponse> generateLogFile(
+            @PathVariable String date) {
+        String taskId = logService.startLogGeneration(date);
+        return ResponseEntity.accepted()
+                .body(new LogTaskResponse(taskId, "Task started", LogTaskStatus.PROCESSING));
+    }
+
+
+    @GetMapping("/status/{taskId}")
+    @Operation(summary = "Получить статус задачи",
+            description = "Возвращает текущий статус задачи генерации логов")
+    public ResponseEntity<LogTaskResponse> getTaskStatus(
+            @Parameter(description = "ID задачи", example = "550e8400-e29b-41d4-a716-446655440000")
+            @PathVariable String taskId) {
+
+        LogTaskResponse response = logService.getTaskStatus(taskId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/download/{taskId}")
+    @Operation(summary = "Скачать сгенерированные логи",
+            description = "Возвращает файл с логами, если задача завершена успешно")
+    @ApiResponse(responseCode = "200", description = "Файл логов успешно получен",
+            content = @Content(mediaType = "text/plain", schema = @Schema(type = "string")))
+    @ApiResponse(responseCode = "404", description = "Логи не найдены или задача не существует")
+    @ApiResponse(responseCode = "409", description = "Задача еще не завершена")
+    @ApiResponse(responseCode = "400", description = "Неверный ID задачи")
+    public ResponseEntity<Resource> downloadLogFile(
+            @Parameter(description = "ID задачи", example = "550e8400-e29b-41d4-a716-446655440000")
+            @PathVariable String taskId) {
+
         try {
-            logDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-        } catch (DateTimeParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format. Use YYYY-MM-DD");
+            LogFileResponse fileResponse = logService.getLogFile(taskId);
+
+            if (fileResponse == null || fileResponse.getContent() == null || fileResponse.getContent().length == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ByteArrayResource("No logs found for this task".getBytes()));
+            }
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=" + fileResponse.getFilename())
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .contentLength(fileResponse.getContent().length)
+                    .body(new ByteArrayResource(fileResponse.getContent()));
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            // Задача еще не завершена
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ByteArrayResource(e.getMessage().getBytes()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ByteArrayResource(e.getMessage().getBytes()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ByteArrayResource("Error processing log file".getBytes()));
         }
-
-        // 2. Проверяем существование файла логов
-        Path logFilePath = Path.of("application.log");
-        if (!Files.exists(logFilePath)) {
-            throw new NotFoundException("Log file not found");
-        }
-
-        // 3. Фильтруем логи по дате
-        List<String> filteredLines = Files.lines(logFilePath)
-                .filter(line -> line.startsWith(logDate.toString()))
-                .toList();
-
-        if (filteredLines.isEmpty()) {
-            throw new NotFoundException("No logs found for date: " + date);
-        }
-
-        // 4. Создаем временный файл в памяти (не на диске)
-        byte[] logContent = String.join(System.lineSeparator(), filteredLines).getBytes();
-        ByteArrayResource resource = new ByteArrayResource(logContent);
-
-        // 5. Формируем ответ с файлом
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=logs-" + date + ".log")
-                .contentType(MediaType.TEXT_PLAIN)
-                .contentLength(logContent.length)
-                .body(resource);
     }
 }
+
