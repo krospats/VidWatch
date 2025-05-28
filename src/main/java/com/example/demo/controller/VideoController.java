@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/videos")
+@RequestMapping("/api/videos")
 @Tag(name = "Видео", description = "Операции с видео")
 public class VideoController {
 
@@ -159,6 +159,11 @@ public class VideoController {
             throw new NotFoundException("there is no video with id " + id);
         }
 
+        User user = userRepository.findById(videoDetails.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + videoDetails.getUserId()));
+
+        videoDetails.setUser(user);
+        System.out.println("VideoDetails" + videoDetails.getUser().getUserName() + videoDetails.getUserId());
         VideoDto updatedVideo = videoService.updateVideo(id, videoDetails);
         return ResponseEntity.ok(updatedVideo);
     }

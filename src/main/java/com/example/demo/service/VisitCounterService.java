@@ -1,12 +1,12 @@
 package com.example.demo.service;
 
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
+import org.springframework.stereotype.Service;
+
 
 @Service
 public class VisitCounterService {
@@ -14,7 +14,6 @@ public class VisitCounterService {
     private final ConcurrentHashMap<String, ReentrantLock> urlLocks = new ConcurrentHashMap<>();
 
     public void incrementCounter(String url) {
-        // Используем блокировку для каждого URL
         ReentrantLock lock = urlLocks.computeIfAbsent(url, k -> new ReentrantLock());
         lock.lock();
         try {

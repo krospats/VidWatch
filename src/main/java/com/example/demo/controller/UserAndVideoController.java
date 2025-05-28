@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @Tag(name = "Пользователи и видео", description = "Операции с пользователями и их видео")
 public class  UserAndVideoController {
 

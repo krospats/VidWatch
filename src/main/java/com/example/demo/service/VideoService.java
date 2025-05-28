@@ -30,7 +30,7 @@ public class VideoService {
     public VideoDto getVideoById(Long id) {
         String cacheKey = "video_" + id;
 
-        // Используем новый метод с проверкой типа
+
         Optional<VideoDto> cachedVideo = cacheService.get(cacheKey, VideoDto.class);
         if (cachedVideo.isPresent()) {
             logger.info("Returning video {} from cache", id);
@@ -78,6 +78,8 @@ public class VideoService {
         Video video = videoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Video not found"));
 
+
+
         video.setVideoName(videoDetails.getVideoName());
         video.setUrl(videoDetails.getUrl());
         video.setDuration(videoDetails.getDuration());
@@ -85,6 +87,8 @@ public class VideoService {
         video.setViews(videoDetails.getViews());
         video.setLikes(videoDetails.getLikes());
         video.setDislikes(videoDetails.getDislikes());
+        video.setUserId(videoDetails.getUserId());
+        video.setUser(videoDetails.getUser());
 
         clearVideoNameCache(video.getVideoName());
         clearVideosCache(id);
