@@ -84,7 +84,6 @@ const VideosPage = () => {
             }
 
             const newVideo = await createVideo(videoData);
-            // Обновляем состояние локально вместо полного перезапроса
             setVideos(prev => [
                 ...prev,
                 {
@@ -94,9 +93,9 @@ const VideosPage = () => {
                 }
             ]);
 
-            return newVideo; // Для обработки в then()
+            return newVideo;
         } catch (err) {
-            throw err; // Пробрасываем для обработки в catch()
+            throw err;
         } finally {
             isSubmittingRef.current = false;
         }
