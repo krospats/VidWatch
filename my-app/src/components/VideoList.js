@@ -61,7 +61,7 @@ const VideoList = ({ videos, users, onDelete, onAddVideo, onEditVideo, showAddBu
                             </td>
                             {onDelete && onEditVideo && (
                                 <td>
-                                    <div className="d-flex gap-2">
+                                    <div  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <Button
                                             variant="outline-primary"
                                             size="sm"
