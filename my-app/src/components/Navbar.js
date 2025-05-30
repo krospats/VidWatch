@@ -30,7 +30,7 @@ const Navbar = () => {
           </BootstrapNavbar.Brand>
           <BootstrapNavbar.Toggle
               aria-controls="basic-navbar-nav"
-              style={{ height: '50px', padding: '0 15px' }}
+              style={{ height: '50px', padding: '0 0px', width: '125%' }}
           />
           <BootstrapNavbar.Collapse id="basic-navbar-nav" style={{ height: '50px' }}>
             <Nav className="me-auto" style={{ height: '50px', alignItems: 'center' }}>

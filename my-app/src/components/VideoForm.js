@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 
-const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
+const VideoForm = ({ users, video, onSubmit, isEditing, isSubmitting }) => {
     const [videoData, setVideoData] = useState({
         videoName: '',
         url: '',
@@ -11,7 +11,19 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
     });
 
     useEffect(() => {
-        if (isEditing && isSubmitting) {
+        if (video) {
+            const formattedDate = video.releaseDate
+                ? new Date(video.releaseDate).toISOString().split('T')[0]
+                : '';
+
+            setVideoData({
+                videoName: video.videoName || '',
+                url: video.url || '',
+                duration: video.duration || '',
+                releaseDate: formattedDate,
+                userId: video.userId || ''
+            });
+        } else {
             setVideoData({
                 videoName: '',
                 url: '',
@@ -20,7 +32,7 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
                 userId: ''
             });
         }
-    }, [isEditing, isSubmitting]);
+    }, [video]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -34,8 +46,10 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
 
     return (
         <Form onSubmit={handleSubmit}>
+            <h2 className="mb-4">{isEditing ? 'Редактировать видео' : 'Добавить видео'}</h2>
+
             <Form.Group className="mb-3" controlId="videoName">
-                <Form.Label>Название видео</Form.Label>
+                <Form.Label column="1">Название видео</Form.Label>
                 <Form.Control
                     type="text"
                     name="videoName"
@@ -44,8 +58,9 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
                     required
                 />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="url">
-                <Form.Label>ссылка на видео</Form.Label>
+                <Form.Label column="2">Ссылка на видео</Form.Label>
                 <Form.Control
                     type="text"
                     name="url"
@@ -54,18 +69,21 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
                     required
                 />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="duration">
-                <Form.Label>Продолжительность (сек)</Form.Label>
+                <Form.Label column="3">Продолжительность (сек)</Form.Label>
                 <Form.Control
                     type="number"
                     name="duration"
                     value={videoData.duration}
                     onChange={handleChange}
                     required
+                    min="1"
                 />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="releaseDate">
-                <Form.Label>Дата выпуска</Form.Label>
+                <Form.Label column="4">Дата выпуска</Form.Label>
                 <Form.Control
                     type="date"
                     name="releaseDate"
@@ -74,8 +92,9 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
                     required
                 />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="userId">
-                <Form.Label>ID пользователя</Form.Label>
+                <Form.Label column="5">Имя пользователя</Form.Label>
                 <Form.Control
                     as="select"
                     name="userId"
@@ -89,9 +108,23 @@ const VideoForm = ({ users, onSubmit, isEditing, isSubmitting }) => {
                     ))}
                 </Form.Control>
             </Form.Group>
-            <Button variant="primary" type="submit" disabled={isSubmitting}>
-                {isEditing ? 'Обновить' : 'Создать'}
-            </Button>
+
+            <div className="d-flex justify-content-start">
+                <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={isSubmitting}
+                    style={{ minWidth: '120px' }}
+                >
+                    {isSubmitting ? (
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    ) : isEditing ? (
+                        'Обновить'
+                    ) : (
+                        'Создать'
+                    )}
+                </Button>
+            </div>
         </Form>
     );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, FloatingLabel } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 
 const UserForm = ({ user, onSubmit, isEditing }) => {
     const [formData, setFormData] = React.useState({
@@ -7,6 +7,8 @@ const UserForm = ({ user, onSubmit, isEditing }) => {
         email: '',
         age: ''
     });
+
+
 
     React.useEffect(() => {
         if (user) {
@@ -17,6 +19,9 @@ const UserForm = ({ user, onSubmit, isEditing }) => {
             });
         }
     }, [user]);
+
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,46 +35,56 @@ const UserForm = ({ user, onSubmit, isEditing }) => {
 
     return (
         <Form onSubmit={handleSubmit} className="animate-fade">
-            <div className="form-columns">
-                <div className="form-column-left">
-                    <FloatingLabel controlId="userName" label="Имя пользователя" className="mb-3">
-                        <Form.Control
-                            type="text"
-                            name="userName"
-                            value={formData.userName}
-                            onChange={handleChange}
-                            required
-                            placeholder="Имя пользователя"
-                        />
-                    </FloatingLabel>
-                    <FloatingLabel controlId="email" label="Электронная почта" className="mb-3">
-                        <Form.Control
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                            placeholder="Email"
-                        />
-                    </FloatingLabel>
-                </div>
-                <div className="form-column-right">
-                    <FloatingLabel controlId="age" label="Возраст" className="mb-3">
-                        <Form.Control
-                            type="number"
-                            name="age"
-                            value={formData.age}
-                            onChange={handleChange}
-                            required
-                            min="1"
-                            placeholder="Возраст"
-                        />
-                    </FloatingLabel>
-                </div>
+            <h2 className="mb-4">{isEditing ? 'Редактировать пользователя' : 'Добавить пользователя'}</h2>
+
+            <div className="mb-4">
+                <h5>Имя пользователя</h5>
+                <Form.Control
+                    type="text"
+                    name="userName"
+                    value={formData.userName}
+                    onChange={handleChange}
+                    required
+                    className="mb-2"
+                    placeholder="Введите имя"
+                />
             </div>
-            <div className="d-flex justify-content-end">
-                <Button variant="primary" type="submit" size="lg">
-                    {isEditing ? 'Сохранить изменения' : 'Добавить пользователя'}
+
+            <div className="mb-4">
+                <h5>Электронная почта</h5>
+                <Form.Control
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="mb-2"
+                    placeholder="Введите email"
+                />
+            </div>
+
+            <div className="mb-4">
+                <h5>Возраст</h5>
+                <Form.Control
+                    type="number"
+                    name="age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    required
+                    min="1"
+                    className="mb-2"
+                    placeholder="Введите возраст"
+                />
+            </div>
+
+            <div className="d-flex justify-content-start mt-4">
+                <Button
+                    variant="primary"
+                    type="submit"
+                    size="lg"
+                    style={{ minWidth: '150px' }}
+                >
+                    {isEditing ? 'Сохранить изменения' : 'Создать'}
                 </Button>
             </div>
         </Form>

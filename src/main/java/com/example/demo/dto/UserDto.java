@@ -24,7 +24,7 @@ public class UserDto {
     private String email;
 
 
-    @Min(value = 10, message = "Возраст должен быть не менее 10 лет")
+    @Min(value = 1, message = "Возраст должен быть не менее 10 лет")
     @Max(value = 120, message = "Возраст должен быть не более 120 лет")
     private Integer age;
 

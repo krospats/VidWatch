@@ -69,4 +69,4 @@ const getUserById = async (userId) => {
     }
 };
 
-export { getUsers, getUserById };
+export { getUsers, getUserById};

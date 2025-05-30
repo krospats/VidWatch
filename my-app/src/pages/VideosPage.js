@@ -61,11 +61,14 @@ const VideosPage = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        try {
-            await deleteVideo(id);
-            setVideos(videos.filter((video) => video.id !== id));
-        } catch (err) {
-            setError(err.message);
+        if (window.confirm('Вы уверены, что хотите удалить это видео?')) {
+
+            try {
+                await deleteVideo(id);
+                setVideos(videos.filter((video) => video.id !== id));
+            } catch (err) {
+                setError(err.message);
+            }
         }
     };
 
@@ -171,12 +174,19 @@ const VideosPage = () => {
                 onHide={() => setShowEditModal(false)}
                 centered
                 className="animate-fade"
+
+
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Редактировать видео</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <VideoForm users={users} onSubmit={handleUpdateVideo} isEditing={true} isSubmitting={isSubmittingRef.current} />
+                    <VideoForm
+                        users={users}
+                        video={selectedVideo}
+                        onSubmit={handleUpdateVideo}
+                        isEditing={true}
+                        isSubmitting={isSubmittingRef.current} />
                 </Modal.Body>
             </Modal>
         </div>

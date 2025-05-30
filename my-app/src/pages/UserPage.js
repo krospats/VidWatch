@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Spinner, Alert, Button } from 'react-bootstrap';
 import VideoList from '../components/VideoList';
 import { getUserById } from '../services/userService';
-import { getVideos } from '../services/videoService';
 
 const UserPage = () => {
     const { userId } = useParams();
@@ -24,7 +23,8 @@ const UserPage = () => {
                 setUser({
                     id: Number(userData.id),
                     userName: userData.name || `Пользователь ${userData.id}`,
-                    email: userData.email || 'Электронная почта не указана'
+                    email: userData.email || 'Электронная почта не указана',
+                    age: userData.age
                 });
 
                 const userVideos = (userData.videos || []).map(video => ({
@@ -65,21 +65,23 @@ const UserPage = () => {
 
     return (
         <div className="container animate-fade">
-            <h2 className="mb-4">Профиль пользователя: {user.userName}</h2>
-            <div className="mb-4">
-                <h5>Информация о пользователе</h5>
-                <p><strong>Имя:</strong> {user.userName}</p>
-                <p><strong>Электронная почта:</strong> {user.email}</p>
+            <h2 className="mb-3">Профиль пользователя: {user.userName}</h2>
+            <div className="mb-2">
+                <h5 className="mb-3">Информация о пользователе</h5>
+                <p className="mb-1"><strong>Электронная почта:</strong> {user.email}</p>
+                <p className="mb-1"><strong>Возраст:</strong> {user.age}</p>
+
             </div>
-            <h5>Видео пользователя</h5>
-            <VideoList
-                videos={videos}
-                users={[user]}
-                showAddButton={false}
-            />
+            {videos.length > 0 && (
+                <VideoList
+                    videos={videos}
+                    users={[user]}
+                    showAddButton={false}
+                />
+            )}
             <div className="mt-3">
-                <Button variant="secondary" onClick={() => navigate('/')}>
-                    Назад к видео
+                <Button variant="secondary" onClick={() => navigate('/users')}>
+                    Назад к пользователям
                 </Button>
             </div>
         </div>
